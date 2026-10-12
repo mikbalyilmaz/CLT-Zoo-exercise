@@ -1,0 +1,17 @@
+distribution,kind,parameters,mean,var,skew,exkurt,moment_order
+Normal,continuous,mu=0; sigma=1,0.0,1.0,0.0,0.0,inf
+Uniform,continuous,a=0; b=1,0.5,0.08333333333333333,0.0,-1.2,inf
+Exponential,continuous,scale=1,1.0,1.0,2.0,6.0,inf
+Gamma,continuous,k(shape)=2; theta(scale)=1,2.0,2.0,1.414213562373095,3.0,inf
+Beta,continuous,alpha=2; beta=5,0.2857142857142857,0.025510204081632654,0.5962847939999439,-0.12,inf
+Lognormal,continuous,mu(log)=0; sigma(log)=0.6,1.1972173631218102,0.6211037960835473,2.2600838884867054,10.273354551059256,inf
+Laplace,continuous,mu=0; b(scale)=1,0.0,2.0,0.0,3.0,inf
+Student-t,continuous,df=5,0.0,1.6666666666666667,0.0,6.0,5
+Pareto,continuous,xm=1; alpha=2.5,1.6666666666666667,2.2222222222222223,nan,nan,2.5
+Chi-square,continuous,df=5,5,10,1.2649110640673518,2.4,inf
+F,continuous,d1=5; d2=10,1.25,1.3541666666666667,3.8670203198129376,50.86153846153846,5.0
+Bernoulli,discrete,p=0.5,0.5,0.25,0.0,-2.0,inf
+Binomial,discrete,n=20; p=0.5,10.0,5.0,0.0,-0.1,inf
+Poisson,discrete,lambda=4,4.0,4.0,0.5,0.25,inf
+Geometric,discrete,p=0.3,3.3333333333333335,7.777777777777778,2.031888635868469,6.128571428571429,inf
+NegBinomial,discrete,r=5; p=0.4,7.5,18.749999999999996,0.9237604307034013,1.2533333333333334,inf

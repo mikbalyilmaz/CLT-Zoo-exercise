@@ -1,0 +1,4 @@
+distribution,parameter,positions,no_finite_mean,no_finite_variance,mean_condition,variance_condition
+Student-t,df,80,1,2,df > 1,df > 2
+Pareto,alpha,93,3,13,alpha > 1,alpha > 2
+F,d2,160,2,4,d2 > 2,d2 > 4
