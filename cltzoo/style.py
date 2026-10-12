@@ -12,9 +12,12 @@ Author: Muhammed Ikbal Yilmaz
 import logging
 from pathlib import Path
 
+import sys
+
 import matplotlib
 
-matplotlib.use("Agg")
+if "ipykernel" not in sys.modules:   # scripts and tests draw to files; inside Jupyter the notebook's backend is kept
+    matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 from matplotlib import font_manager, ticker  # noqa: E402
 

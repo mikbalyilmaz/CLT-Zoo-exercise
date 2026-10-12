@@ -90,7 +90,7 @@ See [NEWS.md](NEWS.md): what was added and a table of the corrections to version
 See [CITATION.cff](CITATION.cff), or:
 
 > Yılmaz, M. İ. (2026). *CLT Zoo: the Law of Large Numbers and the Central Limit Theorem for sixteen distributions*
-> (Version 2.0.0) [Computer software]. https://github.com/mikbalyilmaz/CLT-Zoo-exercise
+> (Version 2.0.1) [Computer software]. https://github.com/mikbalyilmaz/CLT-Zoo-exercise
 
 ## License
 

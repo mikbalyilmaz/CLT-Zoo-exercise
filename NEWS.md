@@ -1,5 +1,12 @@
 # Changes
 
+## Version 2.0.1
+
+- The figures of the two notebook views were not shown in Jupyter: the package switched matplotlib to its
+  file-only backend on import, so the views printed "FigureCanvasAgg is non-interactive" instead of drawing. The
+  backend is now left to the notebook, and each view displays its figure directly. The unit test of the controls now
+  also checks that every change displays one figure.
+
 ## Version 2.0.0
 
 ### New

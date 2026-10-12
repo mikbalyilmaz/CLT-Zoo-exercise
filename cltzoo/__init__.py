@@ -5,4 +5,4 @@ from .clt import (corrected_error, kolmogorov_distance, lattice_constants, runni
                   sample_means)
 from .distributions import NAMES, ZOO, Distribution
 
-__version__ = "2.0.0"
+__version__ = "2.0.1"

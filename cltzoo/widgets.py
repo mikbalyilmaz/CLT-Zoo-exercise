@@ -66,7 +66,8 @@ def explorer_ui(start="Gamma"):
                 state["fig"] = None
                 return
             state["fig"] = fig
-            plt.show()
+            display(fig)          # shown inside the output area, whatever the matplotlib backend
+            plt.close(fig)
 
     def rebuild(*_):
         pre = ZOO[dist.value].preset
@@ -112,12 +113,13 @@ def clt_ui(start="Exponential"):
             out.clear_output(wait=True)
             plt.close("all")
             try:
-                clt_figure(dist.value, _values(dist.value, box.children), N=N.value, M=M.value,
-                           path_length=L.value, seed=seed.value)
+                fig = clt_figure(dist.value, _values(dist.value, box.children), N=N.value, M=M.value,
+                                 path_length=L.value, seed=seed.value)
             except ValueError as e:
                 print(e)
                 return
-            plt.show()
+            display(fig)
+            plt.close(fig)
 
     def rebuild(*_):
         box.children = tuple(_param_sliders(dist.value))

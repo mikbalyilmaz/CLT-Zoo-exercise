@@ -258,14 +258,15 @@ import io  # noqa: E402
 
 import cltzoo.widgets as wd  # noqa: E402
 
-boxes, calls = [], []
-wd.display = boxes.append
+shown, calls = [], []
+wd.display = shown.append              # collects the control panels and every figure the views display
 _e, _c = wd.explorer_figure, wd.clt_figure
 wd.explorer_figure = lambda *a, **k: (calls.append(("e", a[0])), _e(*a, **k))[1]
 wd.clt_figure = lambda *a, **k: (calls.append(("c", a[0])), _c(*a, **k))[1]
 with contextlib.redirect_stdout(io.StringIO()) as printed:
     wd.explorer_ui()
     wd.clt_ui()
+    boxes = [x for x in shown if hasattr(x, "children")]
     for box in boxes:
         for nm in NAMES:
             box.children[0].children[0].value = nm
@@ -273,9 +274,10 @@ with contextlib.redirect_stdout(io.StringIO()) as printed:
     boxes[0].children[3].children[0].value = 2.0          # a = 2 > b = 1
 e_names = [c[1] for c in calls if c[0] == "e"]
 c_names = [c[1] for c in calls if c[0] == "c"]
-check("notebook controls: all 16 distributions in both views, one drawing per change, b <= a reported",
+check("notebook controls: all 16 distributions in both views, each change displays one figure, b <= a reported",
       sorted(set(e_names)) == sorted(NAMES) and sorted(set(c_names)) == sorted(NAMES)
-      and len(c_names) == 17 and "b must be larger than a" in printed.getvalue())
+      and len(c_names) == 17 and "b must be larger than a" in printed.getvalue()
+      and sum(1 for x in shown if hasattr(x, "savefig")) == len(e_names) + len(c_names) - 1)  # one failed drawing
 
 print(f"\n{failed} check(s) failed.")
 sys.exit(1 if failed else 0)
