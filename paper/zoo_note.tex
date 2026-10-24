@@ -1,61 +1,62 @@
-\documentclass[a4paper,10pt]{article}
+\documentclass[11pt,a4paper]{article}
 
-% Encoding and typeface: XeLaTeX with Latin Modern Roman (fontspec default), English via polyglossia
+% Typeface: XeLaTeX with Latin Modern Roman (fontspec default)
 \usepackage{fontspec}
 \usepackage{polyglossia}
 \setdefaultlanguage[variant=british]{english}
 
-% Layout (tight margins)
-\usepackage[a4paper,top=1.2cm,bottom=1.3cm,left=1.3cm,right=1.3cm]{geometry}
+% Page: the measures of the note template (A4, 11 pt, 4.5 cm side margins, header and page count)
+\usepackage[a4paper,left=4.5cm,right=4.5cm,top=4.5cm,bottom=4.1cm,headheight=14pt,headsep=0.55cm,
+  footskip=0.55cm]{geometry}
+\linespread{0.946}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textbf{PROJECT NOTE} $|$ CLT-Zoo-exercise}
+\fancyhead[R]{\small\textbf{Compiled on:} \notedate}
+\fancyfoot[C]{\small\thepage\,/\,\pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.4pt}
 
-% Typography
 \usepackage{microtype}
-\usepackage{setspace}
-\setstretch{0.92}
-
-% Paragraph settings
-\setlength{\parindent}{0pt}
-\setlength{\parskip}{3pt}
-
-% Section styling
-\usepackage{titlesec}
-\titleformat{\section}{\bfseries\normalsize}{\thesection.}{0.4em}{}
-\titlespacing*{\section}{0pt}{6pt}{3pt}
-
-% Better lists
-\usepackage{enumitem}
-\setlist{noitemsep, topsep=2pt}
-
-% Mathematics, tables, figures
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{booktabs}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,array,tabularx}
 \usepackage{graphicx}
+\usepackage{enumitem}
+\setlist{noitemsep, topsep=3pt, leftmargin=*}
+\usepackage{xcolor}
+\definecolor{secblue}{HTML}{1F3A5F}
+\definecolor{boxback}{HTML}{EEF2F6}
+\definecolor{mark}{HTML}{9B2226}
+\definecolor{hl}{HTML}{FFF36B}
+\usepackage{titlesec}
+\titleformat{\section}{\color{secblue}\bfseries\normalsize}{\thesection.}{0.4em}{}
+\titlespacing*{\section}{0pt}{10pt}{4pt}
+\usepackage[font=small,labelfont=bf,labelsep=period,skip=4pt]{caption}
+\usepackage[bottom]{footmisc}
 \usepackage{placeins}
-\usepackage[font=small,labelfont=bf,labelsep=period,skip=3pt]{caption}
-\setlength{\textfloatsep}{8pt}
-\setlength{\floatsep}{6pt}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\setlength{\textfloatsep}{10pt}
+\emergencystretch=3em
+
+\newcommand{\notedate}{\number\day\space\ifcase\month\or January\or February\or March\or April\or May\or June\or
+  July\or August\or September\or October\or November\or December\fi\space\number\year}
 
 \input{numbers.tex}
 
 \begin{document}
 
-% Header (top-right)
-\begin{flushright}
-\small \textbf{Compiled on:} \today
-\end{flushright}
 
-\vspace{-6pt}
-\hrule
-\vspace{24pt}
+\vspace*{14pt}
+\begin{tabular}{@{}p{2.35cm}@{}p{\dimexpr\textwidth-2.35cm}@{}}
+\textbf{TITLE:} & \textbf{\large The CLT Zoo: sixteen distributions, where the Law of Large Numbers and the Central Limit Theorem hold, and how
+far the normal approximation is for discrete sums}\\[3pt]
+\textbf{SUBJECT:} & Aim, method and results of the analyses in version 2 of the \texttt{CLT-Zoo-exercise} repository\\[3pt]
+\textbf{AUTHOR:} & Muhammed İkbal Yılmaz (myucanlar@gmail.com)
+\end{tabular}
 
-\textbf{TITLE:} The CLT Zoo: sixteen distributions, where the Law of Large Numbers and the Central Limit Theorem hold, and how
-far the normal approximation is for discrete sums
-
-\textbf{SUBJECT:} Aim, method and results of the analyses in version 2 of the \texttt{CLT-Zoo-exercise} repository
-
-\textbf{PREPARED BY:} Muhammed İkbal Yılmaz (myucanlar@gmail.com)
-
+\vspace{8pt}
 \vspace{12pt}
 
 \section{Aim and scope}
@@ -89,20 +90,24 @@ $r^\ast = \infty$ for every member of the zoo except Student-t ($r^\ast = \nu$),
 \caption{The sixteen distributions of version 1: parameters (names of version 1), mean and variance. Geometric counts trials up to
 the first success ($1, 2, \dots$); Negative Binomial counts failures before the $r$-th success ($0, 1, \dots$); Pareto has
 $P(X > x) = (x_m/x)^{\alpha}$ for $x \ge x_m$.}\label{tab:zoo}
-\begin{tabular}{lll@{\hspace{2em}}lll}
+\begin{tabular}{lll}
 \toprule
-Distribution & Mean & Variance & Distribution & Mean & Variance \\
+Distribution & Mean & Variance \\
 \midrule
-Normal$(\mu,\sigma)$ & $\mu$ & $\sigma^2$ & Student-t$(\nu)$ & $0$ \ ($\nu>1$) & $\nu/(\nu-2)$ \ ($\nu>2$) \\
-Uniform$(a,b)$ & $(a+b)/2$ & $(b-a)^2/12$ & Pareto$(x_m,\alpha)$ & $\alpha x_m/(\alpha-1)$ \ ($\alpha>1$) &
-$x_m^2\alpha/[(\alpha-1)^2(\alpha-2)]$ \ ($\alpha>2$) \\
-Exponential(scale $s$) & $s$ & $s^2$ & Chi-square$(k)$ & $k$ & $2k$ \\
-Gamma$(k,\theta)$ & $k\theta$ & $k\theta^2$ & F$(d_1,d_2)$ & $d_2/(d_2-2)$ \ ($d_2>2$) &
-$\dfrac{2d_2^2(d_1+d_2-2)}{d_1(d_2-2)^2(d_2-4)}$ \ ($d_2>4$) \\
-Beta$(\alpha,\beta)$ & $\dfrac{\alpha}{\alpha+\beta}$ & $\dfrac{\alpha\beta}{(\alpha+\beta)^2(\alpha+\beta+1)}$ &
+Normal$(\mu,\sigma)$ & $\mu$ & $\sigma^2$ \\
+Uniform$(a,b)$ & $(a+b)/2$ & $(b-a)^2/12$ \\
+Exponential(scale $s$) & $s$ & $s^2$ \\
+Gamma$(k,\theta)$ & $k\theta$ & $k\theta^2$ \\
+Beta$(\alpha,\beta)$ & $\dfrac{\alpha}{\alpha+\beta}$ & $\dfrac{\alpha\beta}{(\alpha+\beta)^2(\alpha+\beta+1)}$ \\
+Lognormal$(m,s)$ & $e^{m+s^2/2}$ & $(e^{s^2}-1)e^{2m+s^2}$ \\
+Laplace$(\mu,b)$ & $\mu$ & $2b^2$ \\
+Student-t$(\nu)$ & $0$ \ ($\nu>1$) & $\nu/(\nu-2)$ \ ($\nu>2$) \\
+Pareto$(x_m,\alpha)$ & $\alpha x_m/(\alpha-1)$ \ ($\alpha>1$) & $x_m^2\alpha/[(\alpha-1)^2(\alpha-2)]$ \ ($\alpha>2$) \\
+Chi-square$(k)$ & $k$ & $2k$ \\
+F$(d_1,d_2)$ & $d_2/(d_2-2)$ \ ($d_2>2$) & $\dfrac{2d_2^2(d_1+d_2-2)}{d_1(d_2-2)^2(d_2-4)}$ \ ($d_2>4$) \\
 Bernoulli$(p)$, Binomial$(n,p)$ & $p$, \ $np$ & $p(1-p)$, \ $np(1-p)$ \\
-Lognormal$(m,s)$ & $e^{m+s^2/2}$ & $(e^{s^2}-1)e^{2m+s^2}$ & Poisson$(\lambda)$ & $\lambda$ & $\lambda$ \\
-Laplace$(\mu,b)$ & $\mu$ & $2b^2$ & Geometric$(p)$, NegBinomial$(r,p)$ & $1/p$, \ $r(1-p)/p$ & $(1-p)/p^2$, \ $r(1-p)/p^2$ \\
+Poisson$(\lambda)$ & $\lambda$ & $\lambda$ \\
+Geometric$(p)$, NegBinomial$(r,p)$ & $1/p$, \ $r(1-p)/p$ & $(1-p)/p^2$, \ $r(1-p)/p^2$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -124,10 +129,10 @@ $-1/2$ ($\alpha = 2.5$), $-1/3$ ($\alpha = 1.5$) and $+1/4$ ($\alpha = 0.8$).
 \textbf{Exact law of the sum.} For nine members $S_N$ has a closed form, which makes the distribution of $Z_N$ exact:
 \begin{equation}
 \begin{aligned}
-&\text{Normal}: \ \mathcal N(N\mu, N\sigma^2); \quad \text{Exponential}(s): \ \text{Gamma}(N, s); \quad
-\text{Gamma}(k,\theta): \ \text{Gamma}(Nk, \theta); \quad \chi^2_k: \ \chi^2_{Nk}; \\
-&\text{Bernoulli}(p): \ \text{Bin}(N, p); \quad \text{Bin}(n,p): \ \text{Bin}(Nn, p); \quad
-\text{Poisson}(\lambda): \ \text{Poisson}(N\lambda); \\
+&\text{Normal}: \ \mathcal N(N\mu, N\sigma^2); \quad \text{Exponential}(s): \ \text{Gamma}(N, s); \\
+&\text{Gamma}(k,\theta): \ \text{Gamma}(Nk, \theta); \quad \chi^2_k: \ \chi^2_{Nk}; \\
+&\text{Bernoulli}(p): \ \text{Bin}(N, p); \quad \text{Bin}(n,p): \ \text{Bin}(Nn, p); \\
+&\text{Poisson}(\lambda): \ \text{Poisson}(N\lambda); \\
 &\text{Geometric}(p): \ N + \text{NegBin}(N, p); \quad \text{NegBin}(r,p): \ \text{NegBin}(Nr, p).
 \end{aligned}\label{eq:sums}
 \end{equation}
@@ -136,28 +141,40 @@ $-1/2$ ($\alpha = 2.5$), $-1/3$ ($\alpha = 1.5$) and $+1/4$ ($\alpha = 0.8$).
 Kolmogorov distance is $D_N = \sup_x |F_N(x) - \Phi(x)|$. For an integer-valued $S_N$, $F_N$ is constant between the points
 $z_k = (k - N\mu)/(\sigma\sqrt N)$, so the supremum is attained at some $z_k$, either at the point or just before it:
 \begin{equation}
-D_N = \max_k \max\bigl(|P(S_N \le k) - \Phi(z_k)|,\ |P(S_N \le k-1) - \Phi(z_k)|\bigr), \label{eq:dlattice}
+\begin{split}
+D_N = \max_k \max\bigl(&|P(S_N \le k) - \Phi(z_k)|,\\
+&|P(S_N \le k-1) - \Phi(z_k)|\bigr),
+\end{split}
+\label{eq:dlattice}
 \end{equation}
 over every $k$ that carries probability (all but $10^{-15}$ in each tail). For a continuous $S_N$, the supremum is located on a grid
 of step 0.001 on $[-10, 10]$ and refined by bounded scalar optimization. The \emph{continuity correction} approximates
 $P(S_N \le k)$ by $\Phi$ at the midpoint between two lattice values; its error is
 \begin{equation}
-E_N = \max_k \bigl|P(S_N \le k) - \Phi\bigl((k + \tfrac12 - N\mu)/(\sigma\sqrt N)\bigr)\bigr|. \label{eq:corrected}
+E_N = \max_k \Bigl|P(S_N \le k) - \Phi\Bigl(\frac{k + \tfrac12 - N\mu}{\sigma\sqrt N}\Bigr)\Bigr|. \label{eq:corrected}
 \end{equation}
 
 \textbf{Why the correction helps, and by how much.} For an integer-valued $X$ whose values have greatest common step 1 (true for all
 five discrete presets), the lattice Edgeworth expansion (Esseen, 1945; Gnedenko and Kolmogorov, 1954) is
 \begin{equation}
-F_N(x) - \Phi(x) = \Bigl[-\frac{\gamma}{6}(x^2 - 1) + \frac{1}{\sigma}\, Q\bigl(N\mu + \sigma\sqrt N x\bigr)\Bigr]\frac{\varphi(x)}{\sqrt N}
-+ o\bigl(N^{-1/2}\bigr), \qquad Q(t) = \lfloor t \rfloor - t + \tfrac12 , \label{eq:edgeworth}
+\begin{split}
+F_N(x) - \Phi(x) &= \Bigl[-\frac{\gamma}{6}(x^2 - 1) + \frac{1}{\sigma}\, Q\bigl(N\mu + \sigma\sqrt N x\bigr)\Bigr]\frac{\varphi(x)}{\sqrt N}
++ o\bigl(N^{-1/2}\bigr),\\
+Q(t) &= \lfloor t \rfloor - t + \tfrac12 ,
+\end{split}
+\label{eq:edgeworth}
 \end{equation}
 where $\varphi$ is the standard normal density. The first term is the skewness correction of continuous distributions; the second,
 a saw-tooth with values in $[-\tfrac12, \tfrac12]$, is the lattice term: it takes both extreme values next to every jump of $F_N$
 and is zero at the midpoints, which is why the continuity correction removes it. Both terms are largest in absolute value at
 $x = 0$, which gives the leading constants
 \begin{equation}
-\sqrt N\, D_N \to c_D = \varphi(0)\Bigl(\frac{1}{2\sigma} + \frac{|\gamma|}{6}\Bigr), \qquad
-\sqrt N\, E_N \to c_E = \varphi(0)\,\frac{|\gamma|}{6}, \qquad \varphi(0) = 1/\sqrt{2\pi}. \label{eq:constants}
+\begin{split}
+\sqrt N\, D_N &\to c_D = \varphi(0)\Bigl(\frac{1}{2\sigma} + \frac{|\gamma|}{6}\Bigr), \qquad
+\sqrt N\, E_N \to c_E = \varphi(0)\,\frac{|\gamma|}{6},\\
+\varphi(0) &= 1/\sqrt{2\pi}.
+\end{split}
+\label{eq:constants}
 \end{equation}
 For symmetric members ($\gamma = 0$) $c_E = 0$ and $E_N$ is of order $1/N$. Analysis 3 checks \eqref{eq:constants} against the
 exact distances.
@@ -171,7 +188,7 @@ against an independent computation (the code of version 1 read from the legacy n
 $N$-fold convolution, goodness-of-fit tests of the samplers, brute-force search on a fine grid):
 
 \begin{center}\footnotesize
-\begin{tabular}{lll}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{2.3cm}>{\raggedright\arraybackslash}p{2.0cm}>{\raggedright\arraybackslash}X@{}}
 \toprule
 Step & Equations & Code \\
 \midrule
@@ -182,7 +199,7 @@ Lattice constants & \eqref{eq:constants} & \texttt{lattice\_constants} \\
 Running mean, sample means & --- & \texttt{running\_mean}, \texttt{running\_mean\_quantiles}, \texttt{sample\_means} \\
 Notebook views & --- & \texttt{panels.explorer\_figure}, \texttt{panels.clt\_figure}, \texttt{widgets} \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{center}
 
 \section{Analysis 1: The zoo and the explorer of version 1 (Figure~\ref{fig:zoo})}
@@ -198,7 +215,7 @@ every slider position of every parameter, the other parameters at their presets.
 dots), at the preset of version 1.
 
 \begin{figure}[h]
-\centering\includegraphics[width=0.86\linewidth]{../figures/fig1_zoo.pdf}
+\centering\includegraphics[width=\textwidth]{../figures/fig1_zoo.pdf}
 \caption{The zoo at the presets of version 1: exact density or probability function and a sample of seed 42 (the preset sample
 size of version 1, or 6,000 draws where its preset showed no sample).}\label{fig:zoo}
 \end{figure}
@@ -231,11 +248,11 @@ $10^5$ draws each (seed 42); then, over 4,000 independent paths, the median of $
 $\bar X_n$ ($\alpha = 0.8$) at 21 values of $n$ from 10 to $10^5$. The slope of its logarithm against $\log n$ is fitted for $n$
 from $10^3$ to $10^5$ and in each decade of $n$.
 
-\textbf{How to read the figure.} (a) Dashed lines: $\mu$. (b) Log--log scale: a straight line of slope $s$ means a power $n^{s}$;
+\textbf{How to read the figure.} (a) Dotted lines: $\mu$. (b) Log--log scale: a straight line of slope $s$ means a power $n^{s}$;
 the band holds the middle half of the paths; dotted lines have the theoretical slope.
 
 \begin{figure}[h]
-\centering\includegraphics[width=0.92\linewidth]{../figures/fig2_lln.pdf}
+\centering\includegraphics[width=\textwidth]{../figures/fig2_lln.pdf}
 \caption{The LLN for Pareto$(1, \alpha)$: (a) one running mean for each $\alpha$; (b) median distance to $\mu$ (or median running
 mean when $\mu = \infty$) over 4,000 paths, with quartiles.}\label{fig:lln}
 \end{figure}
@@ -267,40 +284,39 @@ $E_N < 0.01$, searched up to $N = 3{,}000$.
 
 \textbf{How to read the figures.} Figure~\ref{fig:clt}: histograms of $Z_{30}$ with the $\mathcal N(0,1)$ density; for discrete
 members each bar covers whole lattice values. Figure~\ref{fig:lattice}: log--log scale; dotted lines are $c/\sqrt N$ with $c$ from
-\eqref{eq:constants}; the dashed line is 0.01.
+\eqref{eq:constants}; the red dotted line is 0.01.
 
 \begin{figure}[h]
-\centering\includegraphics[width=0.78\linewidth]{../figures/fig3_clt_n30.pdf}
+\centering\includegraphics[width=\textwidth]{../figures/fig3_clt_n30.pdf}
 \caption{Standardized mean $Z_{30}$ at every preset (20,000 sample means, seed 42) with the $\mathcal N(0,1)$ density, and the
 distance $D$ to $\mathcal N(0,1)$: exact where the law of $S_{30}$ is known, otherwise from the simulation.}\label{fig:clt}
 \end{figure}
 
 \begin{table}[h]
 \centering\footnotesize
-\caption{(Left) $N = 30$: skewness $\gamma/\sqrt{30}$ of $Z_{30}$, exact $D_{30}$ where available, and $D$ from 20,000 simulated
-values (noise level \Noise). (Right) Discrete presets: $\sigma$, $\gamma$, the constants \eqref{eq:constants} with $\sqrt N D_N$
+\caption{(Top) $N = 30$: skewness $\gamma/\sqrt{30}$ of $Z_{30}$, exact $D_{30}$ where available, and $D$ from 20,000 simulated
+values (noise level \Noise). (Bottom) Discrete presets: $\sigma$, $\gamma$, the constants \eqref{eq:constants} with $\sqrt N D_N$
 and $\sqrt N E_N$ at $N = 10^4$, and the smallest $N$ with $D_N < 0.01$ and with $E_N < 0.01$ (both stay below 0.01 for every
 larger $N$ up to 3,000).}\label{tab:lattice}
-\begin{minipage}[t]{0.33\linewidth}\centering
 \begin{tabular}[t]{lrrr}
 \toprule
  & $\gamma/\sqrt{30}$ & exact & sim. \\
 \midrule
 \input{tab_clt.tex}
 \end{tabular}
-\end{minipage}\hfill
-\begin{minipage}[t]{0.64\linewidth}\centering
+
+\medskip
+\setlength{\tabcolsep}{3.5pt}
 \begin{tabular}[t]{lrrrrrrrr}
 \toprule
  & $\sigma$ & $\gamma$ & $c_D$ & $\sqrt N D_N$ & $c_E$ & $\sqrt N E_N$ & $N_D$ & $N_E$ \\
 \midrule
 \input{tab_lattice.tex}
 \end{tabular}
-\end{minipage}
 \end{table}
 
 \begin{figure}[h]
-\centering\includegraphics[width=0.85\linewidth]{../figures/fig4_lattice.pdf}
+\centering\includegraphics[width=\textwidth]{../figures/fig4_lattice.pdf}
 \caption{Discrete presets: exact distance of $Z_N$ to $\mathcal N(0,1)$, (a) without and (b) with the continuity correction.
 Dotted: $c/\sqrt N$ from the lattice Edgeworth expansion.}\label{fig:lattice}
 \end{figure}
@@ -338,18 +354,19 @@ such as $N \ge 30$ does not describe it.
 
 \section*{References}
 {\small
-Esseen, C.-G. (1945). Fourier analysis of distribution functions. A mathematical study of the Laplace--Gaussian law. \textit{Acta
-Mathematica}, 77, 1--125.\\
-Feller, W. (1971). \textit{An introduction to probability theory and its applications} (Vol. 2, 2nd ed.). Wiley.\\
-Gnedenko, B. V., Kolmogorov, A. N. (1954). \textit{Limit distributions for sums of independent random variables}. Addison-Wesley.\\
-Kolmogorov, A. N. (1933). \textit{Grundbegriffe der Wahrscheinlichkeitsrechnung}. Springer.\\
-Lévy, P. (1937). \textit{Théorie de l'addition des variables aléatoires}. Gauthier-Villars.\\
-Lindeberg, J. W. (1922). Eine neue Herleitung des Exponentialgesetzes in der Wahrscheinlichkeitsrechnung. \textit{Mathematische
-Zeitschrift}, 15(1), 211--225.\\
-NumPy and SciPy documentation: \texttt{numpy.random.Generator}, \texttt{scipy.stats}.
+\setlength{\parskip}{2pt}
+\hangindent=1.27cm\hangafter=1 Esseen, C.-G. (1945). Fourier analysis of distribution functions. A mathematical study of the Laplace--Gaussian law. \textit{Acta
+Mathematica}, 77, 1--125.\par
+\hangindent=1.27cm\hangafter=1 Feller, W. (1971). \textit{An introduction to probability theory and its applications} (Vol. 2, 2nd ed.). Wiley.\par
+\hangindent=1.27cm\hangafter=1 Gnedenko, B. V., \& Kolmogorov, A. N. (1954). \textit{Limit distributions for sums of independent random variables}. Addison-Wesley.\par
+\hangindent=1.27cm\hangafter=1 Kolmogorov, A. N. (1933). \textit{Grundbegriffe der Wahrscheinlichkeitsrechnung}. Springer.\par
+\hangindent=1.27cm\hangafter=1 Lévy, P. (1937). \textit{Théorie de l'addition des variables aléatoires}. Gauthier-Villars.\par
+\hangindent=1.27cm\hangafter=1 Lindeberg, J. W. (1922). Eine neue Herleitung des Exponentialgesetzes in der Wahrscheinlichkeitsrechnung. \textit{Mathematische
+Zeitschrift}, 15(1), 211--225.\par
+\hangindent=1.27cm\hangafter=1 NumPy and SciPy documentation: \texttt{numpy.random.Generator}, \texttt{scipy.stats}.\par
 
 \smallskip
-An AI coding assistant was used in writing the code and in preparing this note. All numbers are generated from
+All numbers are generated from
 \texttt{figures/*.csv} by \texttt{make\_paper.py}.
 }
 

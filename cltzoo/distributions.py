@@ -11,7 +11,6 @@ Author: Muhammed Ikbal Yilmaz
 import math
 from dataclasses import dataclass, field
 
-import numpy as np
 from scipy import stats
 
 INF = math.inf

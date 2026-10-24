@@ -25,7 +25,7 @@ from common import save_table
 from cltzoo import NAMES, ZOO
 from cltzoo.legacy import load_v1
 from cltzoo.panels import support_grid
-from cltzoo.style import BLUE, INK, decimal_axis, save_figure, use_style
+from cltzoo.style import BAND, BLUE, auto_axis, free_axis, save_figure, use_style
 
 v1 = load_v1()
 
@@ -135,9 +135,22 @@ save_table(exist, "table3_moment_existence")
 use_style()
 
 
+SYMBOL = {"mu": r"$\mu$", "sigma": r"$\sigma$", "theta": r"$\theta$", "alpha": r"$\alpha$", "beta": r"$\beta$",
+          "lambda": r"$\lambda$", "xm": r"$x_m$", "d1": r"$d_1$", "d2": r"$d_2$", "df": "df", "scale": "scale"}
+
+
+def parameters(d, p):
+    """'μ = 0, σ = 1' for the panel of distribution d at parameters p."""
+    out = []
+    for sp in d.params:
+        base = sp.label.split("(")[0]
+        out.append(f"{SYMBOL.get(base, '$' + base + '$')} = {p[sp.key]:g}")
+    return ", ".join(out)
+
+
 def draw():
     import matplotlib.pyplot as plt
-    fig, axes = plt.subplots(4, 4, figsize=(7.4, 7.0), constrained_layout=True)
+    fig, axes = plt.subplots(4, 4, figsize=(4.75, 4.9), constrained_layout=True)
     for ax, name in zip(axes.flat, NAMES):
         d = ZOO[name]
         p = d.preset_params()
@@ -152,20 +165,31 @@ def draw():
             nb = 40
             inside = s[(s >= lo) & (s <= hi)]
             # bar areas are shares of all draws; the window starts and ends at the support where it is finite
-            ax.hist(inside, bins=np.linspace(lo, hi, nb + 1), weights=np.full(inside.size, nb / (s.size * (hi - lo))),
-                    color=BLUE, alpha=0.3, edgecolor=BLUE, linewidth=0.3)
+            heights, _, _ = ax.hist(inside, bins=np.linspace(lo, hi, nb + 1),
+                                    weights=np.full(inside.size, nb / (s.size * (hi - lo))),
+                                    color=BAND, edgecolor=BAND, linewidth=0.3)
             x = np.linspace(lo, hi, 600)
-            ax.plot(x, law.pdf(x), color=INK, lw=1.0)
+            f = law.pdf(x)
+            ax.plot(x, f, color=BLUE, lw=1.2)
+            top = np.concatenate([heights, f[np.isfinite(f)]])
+            auto_axis(ax, "x", [lo, hi], intervals=(2, 3))
         else:
             k, c = np.unique(s, return_counts=True)
-            ax.bar(k, c / s.size, width=0.8, color=BLUE, alpha=0.3, edgecolor=BLUE, linewidth=0.3)
+            ax.bar(k, c / s.size, width=0.8, color=BAND, edgecolor=BAND, linewidth=0.3)
             x = support_grid(d, p, xpad=0.05)
-            ax.plot(x, law.pmf(x), color=INK, lw=0, marker="o", ms=1.8)
-        ax.set_title(f"{name}: " + ", ".join(f"{sp.label.split('(')[0]} = {p[sp.key]:g}" for sp in d.params),
-                     fontsize=7.5)
-        ax.tick_params(labelsize=6.5)
-        decimal_axis(ax)
-        decimal_axis(ax, "x")
+            f = law.pmf(x)
+            ax.plot(x, f, color=BLUE, lw=0, marker="o", ms=1.6)
+            top = np.concatenate([c / s.size, f])
+            if x.size <= 3:                       # Bernoulli: two values, shown as two categories
+                ax.set_xticks(x)
+                ax.set_xlim(x.min() - 0.6, x.max() + 0.6)
+                free_axis(ax, "x")
+            else:
+                auto_axis(ax, "x", [x.min(), x.max()], intervals=(2, 3))
+        auto_axis(ax, "y", [0.0, 1.3 * np.nanmax(top)], intervals=(2, 3))   # head room for the parameters
+        ax.set_title(name, fontsize=7)
+        ax.text(0.98, 0.97, parameters(d, p), transform=ax.transAxes, ha="right", va="top", fontsize=6)
+        ax.tick_params(labelsize=6)
     return fig
 
 

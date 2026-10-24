@@ -24,7 +24,7 @@ from scipy import stats
 
 from common import save_table
 from cltzoo import NAMES, ZOO, corrected_error, kolmogorov_distance, lattice_constants, sample_means
-from cltzoo.style import AQUA, BLUE, GOLD, INK, MUTED, ORANGE, PURPLE, decimal_axis, save_figure, use_style
+from cltzoo.style import BAND, INK, RED, SERIES, auto_axis, fit_log_axis, may_touch, save_figure, use_style, value_axis
 
 N, M = 30, 20_000
 noise = float(stats.kstwo(M).mean())   # mean distance of M exact N(0,1) draws to N(0,1)
@@ -84,7 +84,7 @@ use_style()
 
 def draw3():
     import matplotlib.pyplot as plt
-    fig, axes = plt.subplots(4, 4, figsize=(7.4, 6.6), constrained_layout=True, sharex=True)
+    fig, axes = plt.subplots(4, 4, figsize=(4.75, 4.6), constrained_layout=True)
     xs = np.linspace(-4, 4, 400)
     for ax, name in zip(axes.flat, NAMES):
         d = ZOO[name]
@@ -98,50 +98,48 @@ def draw3():
         else:
             edges = np.linspace(-4, 4, 41)
         inside = z[(z >= edges[0]) & (z <= edges[-1])]
-        ax.hist(inside, bins=edges, weights=np.full(inside.size, 1 / (z.size * (edges[1] - edges[0]))),
-                color=BLUE, alpha=0.3, edgecolor=BLUE, linewidth=0.3)
-        ax.plot(xs, stats.norm.pdf(xs), color=ORANGE, lw=1.0)
+        h, _, _ = ax.hist(inside, bins=edges, weights=np.full(inside.size, 1 / (z.size * (edges[1] - edges[0]))),
+                          color=BAND, edgecolor=BAND, linewidth=0.3)
+        ax.plot(xs, stats.norm.pdf(xs), color=INK, lw=1.0)
         r = next(r for r in rowsA if r["distribution"] == name)
         lab = f"$D$ = {r['D30_exact']:.3f}" if "D30_exact" in r else f"$D \\approx$ {r['D30_simulated']:.3f} (sim.)"
-        ax.set_title(f"{name}: {lab}", fontsize=7.5)
-        ax.set_xlim(-4, 4)
-        ax.tick_params(labelsize=6.5)
-        decimal_axis(ax)
-        decimal_axis(ax, "x")
+        ax.set_title(name, fontsize=7)
+        ax.text(0.98, 0.97, lab, transform=ax.transAxes, ha="right", va="top", fontsize=6)
+        value_axis(ax, "x", -4, 4, 4)
+        auto_axis(ax, "y", [0.0, 1.35 * max(h.max(), stats.norm.pdf(0))], intervals=(2, 3))
+        ax.tick_params(labelsize=6)
     return fig
 
 
 save_figure("fig3_clt_n30", draw3,
             lambda: r"Figure 3. Standardized mean $Z_{30}$ for every preset (20,000 sample means) and $\mathcal{N}(0,1)$")
 
-COL = {"Bernoulli": BLUE, "Binomial": PURPLE, "Poisson": ORANGE, "Geometric": AQUA, "NegBinomial": GOLD}
-MK = {"Bernoulli": "o", "Binomial": "s", "Poisson": "D", "Geometric": "^", "NegBinomial": "v"}
-
-
 def draw4():
     import matplotlib.pyplot as plt
-    fig, axes = plt.subplots(1, 2, figsize=(7.2, 3.0), constrained_layout=True, sharey=True)
+    fig, axes = plt.subplots(1, 2, figsize=(4.75, 2.5), constrained_layout=True)
+    style = dict(zip(DISCRETE, SERIES))
+    values = np.concatenate([np.concatenate(curves[nm]) for nm in DISCRETE])
     for k, (ax, title) in enumerate(zip(axes, ("(a) Without correction: $D_N$",
                                                  "(b) With continuity correction: $E_N$"))):
         for name in DISCRETE:
             y = curves[name][k]
             r = next(r for r in rowsB if r["distribution"] == name)
             c = r["c_D"] if k == 0 else r["c_E"]
-            ax.plot(NS, y, color=COL[name], lw=1.0, marker=MK[name], ms=2.5, label=name)
+            col, ls, mk = style[name]
+            ax.plot(NS, y, color=col, ls=ls, lw=1.0, marker=mk, ms=2, label=name)
             if c > 0:
-                ax.plot(NS, c / np.sqrt(NS), color=COL[name], lw=0.7, ls=":")
-        ax.axhline(0.01, color=MUTED, lw=0.7, ls="--")
-        ax.set_xscale("log")
-        ax.set_yscale("log")
+                ax.plot(NS, c / np.sqrt(NS), color=col, lw=0.6, ls=(0, (1, 1.4)))
+        ref = ax.axhline(0.01, color=RED, lw=0.9, ls=(0, (1, 1.4)))
+        may_touch(ref)
+        fit_log_axis(ax, "x", NS, every=2)
+        fit_log_axis(ax, "y", values, every=2)
         ax.set_xlabel("$N$")
         ax.set_title(title)
     axes[0].set_ylabel("Exact error")
-    axes[0].legend(loc="lower left", fontsize=7.5)
-    axes[1].text(0.03, 0.03, "dotted: $c/\\sqrt{N}$ from the lattice Edgeworth expansion\n"
-                 "Bernoulli and Binomial ($\\gamma$ = 0): $E_N$ falls like $1/N$", transform=axes[1].transAxes,
-                 fontsize=7, color=INK)
+    axes[0].legend(loc="lower left", fontsize=6.5, handlelength=2.6)
     return fig
 
 
 save_figure("fig4_lattice", draw4,
-            lambda: "Figure 4. Discrete members: exact distance to the normal law, with and without the correction")
+            lambda: "Figure 4. Discrete members: exact distance to the normal law, with and without the correction\n"
+                    "(dotted: $c/\\sqrt{N}$ from the lattice Edgeworth expansion; red: 0.01)")

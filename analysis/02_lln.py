@@ -22,7 +22,7 @@ import numpy as np
 
 from common import save_table
 from cltzoo import ZOO, running_mean, running_mean_quantiles
-from cltzoo.style import AQUA, BLUE, MUTED, ORANGE, INK, save_figure, use_style
+from cltzoo.style import BLUE, INK, MUTED, end_label, fit_log_axis, num, save_figure, source_note, use_style
 
 d = ZOO["Pareto"]
 ALPHAS = (2.5, 1.5, 0.8)
@@ -59,46 +59,42 @@ save_table([{"n": int(n), **{f"alpha_{a}_median": float(curves[a][1][j]) for a i
             for j, n in enumerate(CHECK)], "table5_lln_medians")
 
 use_style()
-COLORS = {2.5: BLUE, 1.5: ORANGE, 0.8: AQUA}
+COLORS = {2.5: INK, 1.5: BLUE, 0.8: MUTED}
 
 
 def draw():
     import matplotlib.pyplot as plt
-    fig, axes = plt.subplots(1, 2, figsize=(7.2, 2.9), constrained_layout=True)
+    fig, axes = plt.subplots(1, 2, figsize=(4.75, 2.35), constrained_layout=True)
     ax = axes[0]
     n = np.arange(1, NMAX + 1)
     for a in ALPHAS:
-        ax.plot(n, paths[a], color=COLORS[a], lw=1.0, label=rf"$\alpha$ = {a}")
+        ax.plot(n, paths[a], color=COLORS[a], lw=1.0)
         mu = d.moments(xm=1.0, alpha=a)["mean"]
         if math.isfinite(mu):
-            ax.axhline(mu, color=COLORS[a], lw=0.8, ls="--")
-    ax.set_xscale("log")
-    ax.set_yscale("log")
+            ax.axhline(mu, color=COLORS[a], lw=0.8, ls=(0, (1, 1.4)))
+        end_label(ax, n[-1], paths[a][-1], rf"$\alpha$ = {a}", COLORS[a])
+    fit_log_axis(ax, "x", [1, NMAX])
+    fit_log_axis(ax, "y", np.concatenate([paths[a] for a in ALPHAS]))
     ax.set_xlabel("$n$")
     ax.set_ylabel(r"Running mean $\bar X_n$")
-    ax.set_title(r"(a) One path each (dashed: $\mu$)")
-    ax.legend(loc="upper left")
+    ax.set_title(r"(a) One path each; dotted: $\mu$")
     ax = axes[1]
     for a in ALPHAS:
         q = curves[a]
         ax.fill_between(CHECK, q[0], q[2], color=COLORS[a], alpha=0.15, lw=0)
-        ax.plot(CHECK, q[1], color=COLORS[a], lw=1.3, marker="o", ms=2.5)
+        ax.plot(CHECK, q[1], color=COLORS[a], lw=1.2, marker="o", ms=2)
         ref = q[1][-1] * (CHECK / CHECK[-1]) ** (-0.5 if a > 2 else 1 / a - 1)
-        ax.plot(CHECK, ref, color=INK, lw=0.7, ls=":")
-        r = next(r for r in rows if r["alpha"] == a)
-        ax.plot([], [], color=COLORS[a], lw=1.3, marker="o", ms=2.5,
-                label=(rf"$\alpha$ = {a}: slope {r['slope_fitted']:.3f} (theory {r['slope_theory']:.3f})"
-                       ).replace("-", "\u2212"))
-    ax.set_xscale("log")
-    ax.set_yscale("log")
-    ax.set_xlim(8, 1.25e5)
-    ax.set_ylim(top=3e4)
-    ax.legend(loc="upper left", fontsize=7.5)
+        ax.plot(CHECK, ref, color=COLORS[a], lw=0.7, ls=(0, (1, 1.4)))
+        end_label(ax, CHECK[-1], q[1][-1], rf"$\alpha$ = {a}", COLORS[a])
+    fit_log_axis(ax, "x", CHECK, every=2)
+    allq = np.concatenate([np.concatenate(curves[a]) for a in ALPHAS])
+    fit_log_axis(ax, "y", np.append(allq, 100 * allq.max()), every=2)    # room above the curves for the note
     ax.set_xlabel("$n$")
-    ax.set_title(r"(b) Median over 4,000 paths")
     ax.set_ylabel(r"$|\bar X_n - \mu|$, or $\bar X_n$ for $\alpha$ = 0.8")
-    ax.text(0.02, 0.03, "band: quartiles; dotted: theoretical slope", transform=ax.transAxes, fontsize=7.5,
-            color=MUTED)
+    ax.set_title(r"(b) Median over 4,000 paths")
+    lines = [f"{a}: {num(r['slope_fitted'], '{:.3f}')} ({num(r['slope_theory'], '{:.3f}')})"
+             for a, r in ((r_["alpha"], r_) for r_ in rows)]
+    source_note(ax, "Slope, fitted (theory)\n" + "\n".join(rf"$\alpha$ = {t}" for t in lines), y=0.98, va="top")
     return fig
 
 

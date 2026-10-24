@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 title: "CLT Zoo: the Law of Large Numbers and the Central Limit Theorem for sixteen distributions"
-version: 2.0.1
+version: 2.1.0
 authors:
   - family-names: "Yılmaz"
     given-names: "Muhammed İkbal"
