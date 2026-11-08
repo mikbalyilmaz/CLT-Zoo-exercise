@@ -1,5 +1,15 @@
 # Changes
 
+## Version 2.1.1
+
+No result changed: every table and every number in the note is the same as in version 2.1.0.
+
+| # | Version 2.1.0 | Version 2.1.1 |
+|---|---|---|
+| 1 | In Figures 2 and 4, lines and markers that start at the first x tick sat on the vertical axis | The vertical axis is moved 4 pt away from the data (axis limits stay at labelled ticks) |
+| 2 | The note named Pareto, F, Lognormal and Bernoulli as the members with the largest distance at $N = 30$, but the simulated distance of Geometric (0.0394) exceeds those of F (0.0388) and Lognormal (0.0305) | The sentence names Pareto and Bernoulli, followed by Geometric, F and Lognormal |
+| 3 | The README showed Figures 1 and 4 only; the citation gave version 2.1.0 | The README shows Figures 1 to 4, with a result for Figure 3; the citation gives the current version |
+
 ## Version 2.1.0
 
 No result changed: every table and every number in the note is the same as in version 2.0.1.

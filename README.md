@@ -71,15 +71,23 @@ sample_means(d, p, N=30, M=5000, rng=np.random.default_rng(42))
 - **The LLN on the Pareto slider.** For $\alpha = 2.5$, 1.5 and 0.8 the median error of the running mean scales like
   $n^{-0.491}$, $n^{-0.332}$ and (the mean being infinite) $n^{+0.272}$, against the theoretical $n^{-1/2}$,
   $n^{1/\alpha - 1} = n^{-1/3}$ and $n^{+1/4}$.
+
+![The LLN on the Pareto slider](figures/fig2_lln.png)
+
+- **The standardized mean at $N = 30$.** The largest distances to $\mathcal N(0,1)$ belong to Pareto (0.114, no finite
+  third moment) and Bernoulli (0.072, exact; its standardized mean takes only 31 values), followed by Geometric (0.039),
+  F (0.039) and Lognormal (0.030). For $M = 20{,}000$ sample means the simulation noise is 0.0061.
+
+![Standardized mean for every preset](figures/fig3_clt_n30.png)
 - **The continuity correction, measured exactly.** For the five discrete members the distance of $Z_N$ to
   $\mathcal N(0,1)$ is $c_D/\sqrt N$ and, with the continuity correction, $c_E/\sqrt N$, with the constants of the
   lattice Edgeworth expansion matched to four decimals. The correction removes the lattice term and leaves the skewness
   term: to bring the error below 0.01, Bernoulli(0.5) needs $N = 1{,}592$ without it and $N = 4$ with it; Geometric(0.3)
   needs 427 and 183.
 
-All numbers are in `figures/*.csv` and in the project note.
-
 ![Discrete members](figures/fig4_lattice.png)
+
+All numbers are in `figures/*.csv` and in the project note.
 
 ## Changes from version 1
 
@@ -90,7 +98,7 @@ See [NEWS.md](NEWS.md): what was added and a table of the corrections to version
 See [CITATION.cff](CITATION.cff), or:
 
 > Yılmaz, M. İ. (2026). *CLT Zoo: the Law of Large Numbers and the Central Limit Theorem for sixteen distributions*
-> (Version 2.1.0) [Computer software]. https://github.com/mikbalyilmaz/CLT-Zoo-exercise
+> (Version 2.1.1) [Computer software]. https://github.com/mikbalyilmaz/CLT-Zoo-exercise
 
 ## License
 

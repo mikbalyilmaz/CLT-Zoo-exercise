@@ -95,6 +95,8 @@ def draw():
     lines = [f"{a}: {num(r['slope_fitted'], '{:.3f}')} ({num(r['slope_theory'], '{:.3f}')})"
              for a, r in ((r_["alpha"], r_) for r_ in rows)]
     source_note(ax, "Slope, fitted (theory)\n" + "\n".join(rf"$\alpha$ = {t}" for t in lines), y=0.98, va="top")
+    for a in fig.axes:   # the vertical axis stands 4 pt away from the data, which start on the first x value
+        a.spines["left"].set_position(("outward", 4))
     return fig
 
 

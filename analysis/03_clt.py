@@ -137,6 +137,8 @@ def draw4():
         ax.set_title(title)
     axes[0].set_ylabel("Exact error")
     axes[0].legend(loc="lower left", fontsize=6.5, handlelength=2.6)
+    for a in fig.axes:   # the vertical axis stands 4 pt away from the data, which start on the first x value
+        a.spines["left"].set_position(("outward", 4))
     return fig
 
 

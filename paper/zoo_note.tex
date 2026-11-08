@@ -321,9 +321,9 @@ larger $N$ up to 3,000).}\label{tab:lattice}
 Dotted: $c/\sqrt N$ from the lattice Edgeworth expansion.}\label{fig:lattice}
 \end{figure}
 
-\textbf{Finding.} At $N = 30$ the largest distances belong to the members with heavy or very skewed tails: Pareto
-(\DParetoSim, no finite third moment), F (\DFSim) and Lognormal (\DLognormalSim), and to Bernoulli (\DBernoulli), whose standardized
-mean takes only 31 values. Where the exact value is known the simulated distance agrees with it up to the noise level (Exponential:
+\textbf{Finding.} At $N = 30$ the largest distances belong to Pareto
+(\DParetoSim, no finite third moment) and Bernoulli (\DBernoulli, exact; its standardized mean takes only 31 values), followed by
+Geometric (\DGeoSim), F (\DFSim) and Lognormal (\DLognormalSim): the members with heavy or strongly skewed tails. Where the exact value is known the simulated distance agrees with it up to the noise level (Exponential:
 \DExpExact{} exact, \DExpSim{} simulated). For the five discrete presets $\sqrt N D_N$ and $\sqrt N E_N$ at $N = 10^4$ equal the
 constants of \eqref{eq:constants} to four decimals (Table~\ref{tab:lattice}). Without the correction, $D_N < 0.01$ requires
 $N = \NdBer$ for Bernoulli and between \NdBin{} and \NdGeo{} for the others; with it, $N = \NeBer$, \NeBin, \NePoi, \NeNb{} and
